@@ -94,14 +94,11 @@ def write_csv(out='output.csv'):
         print(line, file=f)
     f.close()
 
-def run(csv=True):
+if __name__ == '__main__':
     with keyboard.Listener(
             on_press=on_press,
             on_release=on_release) as listener:
         listener.join()
-    print_results()
-    if csv:
-        write_csv()
 
-if __name__ == '__main__':
-    run()
+    print_results()
+    write_csv()
