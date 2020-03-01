@@ -1,6 +1,7 @@
 README.md
 setup.py
 keytime/__init__.py
+keytime/__main__.py
 keytime/keytime.py
 keytime.egg-info/PKG-INFO
 keytime.egg-info/SOURCES.txt
