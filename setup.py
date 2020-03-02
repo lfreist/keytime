@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name='keytime',
-    version='0.1.0',
+    version='0.1.1',
     description='get time, how long a key is pressed',
     long_description=long_description,
     long_description_content_type="text/markdown",
