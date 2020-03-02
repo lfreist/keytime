@@ -95,6 +95,7 @@ def write_csv(out='output.csv'):
     f.close()
 
 def run(csv=True):
+    global DATA
     with keyboard.Listener(
             on_press=on_press,
             on_release=on_release) as listener:
@@ -102,6 +103,7 @@ def run(csv=True):
     print_results()
     if csv:
         write_csv()
+    DATA = []
 
 if __name__ == '__main__':
     run()
