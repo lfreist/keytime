@@ -2,6 +2,12 @@ import time
 from pynput import keyboard
 
 DATA = []
+OLD_DATA = []
+def reset_data():
+    global DATA
+    global OLD_DATA
+    OLD_DATA.append(DATA)
+    DATA = []
 
 class Key:
     def __init__(self, name: str):
@@ -61,8 +67,10 @@ def print_results():
     for i in DATA:
         summe, n = i.summe()
         print('|  {}       |   {}                  |  {}                  |'.format(i.get_name(),
-                                                                                    round(summe, 2),
+                                                                                    '{:.2f}'.format(summe),
                                                                                     n))
+    if not DATA:
+        print('| no key pressed...                                          |')
     print('|------------------------------------------------------------|')
 
 def write_csv(out='output.csv'):
@@ -94,7 +102,69 @@ def write_csv(out='output.csv'):
         print(line, file=f)
     f.close()
 
-def run(csv=True):
+def run_interactive():
+    import os
+
+    print('entering interactive mode of Keytime', end='')
+    for i in range(20):
+        time.sleep(0.1)
+        print('. ', end='')
+    print('\n')
+    while True:
+        csv = input('Would you like to save collected data in a csv file? (y, n) ')
+        if csv == 'y' or csv == 'n':
+            print()
+            break
+        else:
+            print()
+            print('Invalid input.')
+            continue
+    if csv == 'y':
+        while True:
+            csv = input('Please enter full path for csv (default: {}): '.format(os.getcwd()))
+            if os.path.exists(csv):
+                print()
+                csv = os.path.join(csv, 'output.csv')
+                print('Saving csv at {}'.format(csv))
+                break
+            if csv == '':
+                print()
+                csv = os.path.join(os.getcwd(), 'output.csv')
+                print('Saving csv at default location: {}'.format(csv))
+                break
+            else:
+                print()
+                while True:
+                    csv = input(
+                        'Path does not exist. Would you like to save csv in your current working directory? (y, n) ')
+                    if csv == 'y' or csv == 'n':
+                        break
+                    else:
+                        print()
+                        print('Invalid input.')
+                        continue
+                if csv == 'y':
+                    a = os.getcwd()
+                    csv = os.path.join(a, 'output.csv')
+                    print()
+                    print('csv will be saved at {}'.format(csv))
+                    break
+                else:
+                    continue
+                break
+        return csv
+    else:
+        return None
+
+
+
+def run(interactive=False):
+    csv = None
+    if interactive:
+        csv = run_interactive()
+    print()
+    print('Keytime is now running!')
+    print()
     global DATA
     with keyboard.Listener(
             on_press=on_press,
@@ -102,8 +172,21 @@ def run(csv=True):
         listener.join()
     print_results()
     if csv:
-        write_csv()
-    DATA = []
+        write_csv(csv)
+    reset_data()
+    while True:
+        print()
+        again = input('Would you like to run Keytime again? (y, n) ')
+        if again == 'y' or again == 'n' or again == '':
+            break
+        else:
+            continue
+    if again == 'n' or again == '':
+        print()
+        print('Exit Keytime')
+        return None
+    else:
+        run(interactive)
 
 if __name__ == '__main__':
     run()
